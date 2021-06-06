@@ -1,0 +1,12 @@
+test-files
+node_modules
+dist
+test
+
+# https://github.com/github/gitignore/blob/master/Global/VisualStudioCode.gitignore
+.vscode/*
+!.vscode/tasks.json
+!.vscode/launch.json
+
+*.vsix
+.DS_Store

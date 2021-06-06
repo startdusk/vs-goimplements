@@ -1,2 +1,5 @@
-# vs-goimplements
-VSCode 插件：实现在VSCode中生成Go接口代码
+# Golang implement interface for Visual Studio Code
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT)
+
+**Usage**
