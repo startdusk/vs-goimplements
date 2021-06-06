@@ -1,8 +1,14 @@
 {
   "name": "vs-goimplements",
+  "publisher": "clylia217",
   "displayName": "vs-goimplements",
   "description": "go implements interface",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/startdusk/vs-goimplements.git"
+  },
   "version": "0.0.1",
+  "license": "MIT",
   "engines": {
     "vscode": "^1.55.0"
   },
