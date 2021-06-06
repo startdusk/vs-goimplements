@@ -18,7 +18,8 @@
     "commands": [
       {
         "command": "goimplement.implement",
-        "title": "implement"
+        "title": "implement",
+        "category": "Go"
       }
     ]
   },
