@@ -3,6 +3,8 @@ import * as fs from "fs";
 
 import * as path from "path";
 
+import strip = require("strip-comments");
+
 export namespace fileServer {
   export interface IInterface {
     packageName: string;
@@ -64,7 +66,7 @@ export namespace fileServer {
 
   export function extractInterface(info: GOProjectInfo) {
     const url = info.url;
-    const file = readFile(url);
+    const file = removeComment(readFile(url));
     if (!file) {
       return;
     }
@@ -148,5 +150,9 @@ export namespace fileServer {
     }
 
     return fs.readFileSync(url, "utf-8");
+  }
+
+  export function removeComment(text: string): string {
+    return strip(text);
   }
 }

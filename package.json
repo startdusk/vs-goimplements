@@ -7,7 +7,7 @@
     "type": "git",
     "url": "https://github.com/startdusk/vs-goimplements.git"
   },
-  "version": "0.0.2",
+  "version": "0.0.4",
   "license": "MIT",
   "engines": {
     "vscode": "^1.55.0"
@@ -57,6 +57,8 @@
     "webpack-cli": "^4.4.0"
   },
   "dependencies": {
+    "@types/strip-comments": "^2.0.0",
+    "strip-comments": "^2.0.1",
     "yarn": "^1.22.10"
   }
 }

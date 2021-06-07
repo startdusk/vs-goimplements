@@ -71,7 +71,8 @@ export function activate(context: vscode.ExtensionContext) {
         const chiosInterface = pickItem.goImterface;
         const implementTypeStartLine = range.start.line;
         const implementTypeCurline = document.lineAt(implementTypeStartLine);
-        const match = implementTypeCurline.text.match(
+        const implementTypeCurlineText = fileServer.removeComment(implementTypeCurline.text).trim();
+        const match = implementTypeCurlineText.match(
           /(?<=type\s*)(\w+)\s(?!interface)/g
         );
         let implementTypeName = "";
@@ -85,16 +86,16 @@ export function activate(context: vscode.ExtensionContext) {
         const arr = text.split("\n");
 
         let implementPosition: vscode.Position;
-        if (implementTypeCurline.text.endsWith("{}")) {
+        if (implementTypeCurlineText.endsWith("{}")) {
           // type xxx struct{}
           implementPosition = new vscode.Position(
-            implementTypeStartLine + 2,
+            implementTypeStartLine + 1,
             0
           );
-        } else if (!implementTypeCurline.text.endsWith("{")) {
+        } else if (!implementTypeCurlineText.endsWith("{")) {
           // type xxx int|string|boolean|...
           implementPosition = new vscode.Position(
-            implementTypeStartLine + 2,
+            implementTypeStartLine + 1,
             0
           );
         } else {
@@ -137,7 +138,7 @@ export function activate(context: vscode.ExtensionContext) {
               return;
             }
             const res = await editor.edit((editBuilder) => {
-              editBuilder.insert(implementPosition, stdout);
+              editBuilder.insert(implementPosition, "\n"+stdout);
             });
             if (res) {
               await document.save();
@@ -156,7 +157,7 @@ export function activate(context: vscode.ExtensionContext) {
 export function deactivate() {}
 
 function init() {
-  if (!process.env["GOROOT"]) {
+  if (!process.env["GOROOT"] || !process.env["GOPATH"]) {
     const { binPath } = getBinPathWithExplanation("go", false);
     const goRuntimePath = binPath;
 
@@ -188,7 +189,6 @@ function init() {
             process.env[envName] = envOutput[envName].trim();
           }
         }
-
         const goroot = process.env["GOROOT"]?.toString() + "/src";
         fileServer.clear();
         fileServer.viaDir(goroot).forEach((url) => {
