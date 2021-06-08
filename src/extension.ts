@@ -38,116 +38,116 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand(COMMAND, async () => {
       fileServer.init();
       const editor = vscode.window.activeTextEditor;
-      if (editor) {
-        const document = editor.document;
-        const range = editor.selection;
+      if (!editor) {
+        return;
+      }
+      const document = editor.document;
+      const range = editor.selection;
 
-        vscode.workspace.workspaceFolders?.forEach((value) => {
-          fileServer.viaDir(value.uri.fsPath).forEach((url) => {
-            fileServer.extractInterface({
-              url,
-              gopath: false,
-            });
+      if (!fileServer.isAtStartOfType(document, range)) {
+        return;
+      }
+      vscode.workspace.workspaceFolders?.forEach((value) => {
+        fileServer.viaDir(value.uri.fsPath).forEach((url) => {
+          fileServer.extractInterface({
+            url,
+            gopath: false,
           });
         });
+      });
 
-        const interfaceList = fileServer.getInterfaceList();
-        const pickItemList: IPickItem[] = interfaceList.map<IPickItem>(
-          (value) => {
-            return {
-              label: value.interfaceName,
-              detail: "in " + value.path,
-              goImterface: value,
-            };
-          }
-        );
-        const pickItem = await vscode.window.showQuickPick(pickItemList, {
-          placeHolder: "input or choose interface to implement",
-        });
-        if (!pickItem) {
-          return;
+      const interfaceList = fileServer.getInterfaceList();
+      const pickItemList: IPickItem[] = interfaceList.map<IPickItem>(
+        (value) => {
+          return {
+            label: value.interfaceName,
+            detail: "in " + value.path,
+            goImterface: value,
+          };
         }
+      );
+      const pickItem = await vscode.window.showQuickPick(pickItemList, {
+        placeHolder: "input or choose interface to implement",
+      });
+      if (!pickItem) {
+        return;
+      }
 
-        const chiosInterface = pickItem.goImterface;
-        const implementTypeStartLine = range.start.line;
-        const implementTypeCurline = document.lineAt(implementTypeStartLine);
-        const implementTypeCurlineText = fileServer.removeComment(implementTypeCurline.text).trim();
-        const match = implementTypeCurlineText.match(
-          /(?<=type\s*)(\w+)\s(?!interface)/g
-        );
-        let implementTypeName = "";
-        let receiver = "";
-        if (match) {
-          implementTypeName = match[0].trim();
-          receiver = implementTypeName[0].toLowerCase();
-        }
+      const chiosInterface = pickItem.goImterface;
+      const implementTypeStartLine = range.start.line;
+      const implementTypeCurline = document.lineAt(implementTypeStartLine);
+      const implementTypeCurlineText = fileServer
+        .removeComment(implementTypeCurline.text)
+        .trim();
+      const match = implementTypeCurlineText.match(
+        /(?<=type\s*)(\w+)\s(?!interface)/g
+      );
+      let implementTypeName = "";
+      let receiver = "";
+      if (match) {
+        implementTypeName = match[0].trim();
+        receiver = implementTypeName[0].toLowerCase();
+      }
 
-        const text = document.getText();
-        const arr = text.split("\n");
+      const text = document.getText();
+      const arr = text.split("\n");
 
-        let implementPosition: vscode.Position;
-        if (implementTypeCurlineText.endsWith("{}")) {
-          // type xxx struct{}
-          implementPosition = new vscode.Position(
-            implementTypeStartLine + 1,
-            0
-          );
-        } else if (!implementTypeCurlineText.endsWith("{")) {
-          // type xxx int|string|boolean|...
-          implementPosition = new vscode.Position(
-            implementTypeStartLine + 1,
-            0
-          );
-        } else {
-          // type xxx struct {
-          //     xxx xxxxx
-          //}
-          arr.splice(0, implementTypeStartLine);
-          for (let index = 0; index < arr.length; index++) {
-            if (arr[index].startsWith("}")) {
-              implementPosition = new vscode.Position(
-                implementTypeStartLine + index + 1,
-                0
-              );
-              break;
-            }
+      let implementPosition: vscode.Position;
+      if (implementTypeCurlineText.endsWith("{}")) {
+        // type xxx struct{}
+        implementPosition = new vscode.Position(implementTypeStartLine + 1, 0);
+      } else if (!implementTypeCurlineText.endsWith("{")) {
+        // type xxx int|string|boolean|...
+        implementPosition = new vscode.Position(implementTypeStartLine + 1, 0);
+      } else {
+        // type xxx struct {
+        //     xxx xxxxx
+        //}
+        arr.splice(0, implementTypeStartLine);
+        for (let index = 0; index < arr.length; index++) {
+          if (arr[index].startsWith("}")) {
+            implementPosition = new vscode.Position(
+              implementTypeStartLine + index + 1,
+              0
+            );
+            break;
           }
         }
-        const args = [
-          `${receiver} ${implementTypeName}`,
-          `${chiosInterface.fullInterfaceName}`,
-        ];
-        const goimpl = getBinPath("impl");
-        const p = cp.execFile(
-          goimpl,
-          args,
-          {
-            env: toolExecutionEnvironment(document.uri),
-            cwd: path.dirname(document.fileName),
-          },
-          async (err, stdout, stderr) => {
-            if (err && (<any>err).code === "ENOENT") {
-              return;
-            }
-
-            if (err) {
-              console.error(err);
-              vscode.window.showInformationMessage(
-                `Cannot stub interface: ${stderr}`
-              );
-              return;
-            }
-            const res = await editor.edit((editBuilder) => {
-              editBuilder.insert(implementPosition, "\n"+stdout);
-            });
-            if (res) {
-              await document.save();
-            }
+      }
+      const args = [
+        `${receiver} ${implementTypeName}`,
+        `${chiosInterface.fullInterfaceName}`,
+      ];
+      const goimpl = getBinPath("impl");
+      const p = cp.execFile(
+        goimpl,
+        args,
+        {
+          env: toolExecutionEnvironment(document.uri),
+          cwd: path.dirname(document.fileName),
+        },
+        async (err, stdout, stderr) => {
+          if (err && (<any>err).code === "ENOENT") {
+            return;
           }
-        );
-        if (p.pid) {
-          p.stdin?.end();
+
+          if (err) {
+            console.error(err);
+            vscode.window.showInformationMessage(
+              `Cannot stub interface: ${stderr}`
+            );
+            return;
+          }
+          const res = await editor.edit((editBuilder) => {
+            editBuilder.insert(implementPosition, "\n" + stdout);
+          });
+          if (res) {
+            await document.save();
+          }
         }
+      );
+      if (p.pid) {
+        p.stdin?.end();
       }
     })
   );

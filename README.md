@@ -1,7 +1,7 @@
 # Generate Interface Stubs in Visual Studio Code
 
-[![Version](https://img.shields.io/vscode-marketplace/v/clylia217.vs-goimplements.svg?style=flat-square&label=vscode%20marketplace)](https://marketplace.visualstudio.com/items?itemName=clylia217.vs-goimplements)[![Total Installs](https://img.shields.io/vscode-marketplace/d/clylia217.vs-goimplements.svg?style=flat-square)](https://marketplace.visualstudio.com/items?itemName=clylia217.vs-goimplements)[![Rating](https://img.shields.io/vscode-marketplace/r/clylia217.vs-goimplements.svg?style=flat-square)](https://marketplace.visualstudio.com/items?itemName=clylia217.vs-goimplements)
-[![License: MIT](https://img.shields.io/badge/License-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT)
+[![Badge for version for Visual Studio Code extension](https://vsmarketplacebadge.apphb.com/version-short/clylia217.vs-goimplements.svg?color=blue&style=?style=for-the-badge&logo=visual-studio-code)](https://marketplace.visualstudio.com/items?itemName=clylia217.vs-goimplements&wt.mc_id=vscode-versionlens-gitlab) [![Installs](https://vsmarketplacebadge.apphb.com/installs-short/clylia217.vs-goimplements.svg?color=blue&style=flat-square)](https://marketplace.visualstudio.com/items?itemName=clylia217.vs-goimplements)
+[![Rating](https://vsmarketplacebadge.apphb.com/rating-short/clylia217.vs-goimplements.svg?color=blue&style=flat-square)](https://marketplace.visualstudio.com/items?itemName=clylia217.vs-goimplements) [![The MIT License](https://img.shields.io/badge/license-MIT-orange.svg?color=blue&style=flat-square)](https://opensource.org/licenses/MIT)
 
 **Usage**
 
