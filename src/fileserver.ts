@@ -50,7 +50,9 @@ export namespace fileServer {
         fullPath.search("internal") === -1 &&
         fullPath.search("vendor") === -1 &&
         fullPath.search("issue") === -1 &&
-        fullPath.search("testdata") === -1
+        fullPath.search("testdata") === -1 &&
+        fullPath.search("main.go") === -1 &&
+        fullPath.search("cmd") === -1
       ) {
         list.push(fullPath);
       }

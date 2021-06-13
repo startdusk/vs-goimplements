@@ -14,6 +14,7 @@ import {
   suggestDownloadGo,
   toolExecutionEnvironment,
 } from "./util";
+import { multiStepInput } from "./multiStepInput";
 
 interface IPickItem extends vscode.QuickPickItem {
   goImterface: fileServer.IInterface;
@@ -66,14 +67,9 @@ export function activate(context: vscode.ExtensionContext) {
           };
         }
       );
-      const pickItem = await vscode.window.showQuickPick(pickItemList, {
-        placeHolder: "input or choose interface to implement",
-      });
-      if (!pickItem) {
-        return;
-      }
 
-      const chiosInterface = pickItem.goImterface;
+      const state = await multiStepInput(context, pickItemList);
+      const chiosInterface = state.resourceInterfaces;
       const implementTypeStartLine = range.start.line;
       const implementTypeCurline = document.lineAt(implementTypeStartLine);
       const implementTypeCurlineText = fileServer
@@ -82,11 +78,10 @@ export function activate(context: vscode.ExtensionContext) {
       const match = implementTypeCurlineText.match(
         /(?<=type\s*)(\w+)\s(?!interface)/g
       );
-      let implementTypeName = "";
       let receiver = "";
       if (match) {
-        implementTypeName = match[0].trim();
-        receiver = implementTypeName[0].toLowerCase();
+        const implementTypeName = match[0].trim();
+        receiver = state.receiverNamePair + implementTypeName;
       }
 
       const text = document.getText();
@@ -115,8 +110,8 @@ export function activate(context: vscode.ExtensionContext) {
         }
       }
       const args = [
-        `${receiver} ${implementTypeName}`,
-        `${chiosInterface.fullInterfaceName}`,
+        `${receiver}`,
+        `${chiosInterface.goImterface.fullInterfaceName}`,
       ];
       const goimpl = getBinPath("impl");
       const p = cp.execFile(
