@@ -21,6 +21,12 @@
   ],
   "main": "./dist/extension.js",
   "contributes": {
+    "keybindings": [
+      {
+        "command": "goimplement.implement",
+        "key": "ctrl+shift+i"
+      }
+    ],
     "commands": [
       {
         "command": "goimplement.implement",
