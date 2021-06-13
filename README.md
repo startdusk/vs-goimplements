@@ -7,6 +7,8 @@
 
 ![Multi-step sample](https://github.com/startdusk/vs-goimplements/blob/main/preview.gif)
 
+- and you can using default shorcut `ctrl + shift + i`
+
 # Pre dependence
 
 - Install Golang
@@ -19,3 +21,5 @@
 - Run the `Run Extension` target in the Debug View. This will:
   - Start a task `npm: watch` to compile the code
   - Run the extension in a new VS Code window
+
+# Enjoy：）
