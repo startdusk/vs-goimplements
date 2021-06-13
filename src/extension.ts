@@ -13,6 +13,7 @@ import {
   getWorkspaceFolderPath,
   suggestDownloadGo,
   toolExecutionEnvironment,
+  getReceiverName,
 } from "./util";
 import { multiStepInput } from "./multiStepInput";
 
@@ -68,8 +69,6 @@ export function activate(context: vscode.ExtensionContext) {
         }
       );
 
-      const state = await multiStepInput(context, pickItemList);
-      const chiosInterface = state.resourceInterfaces;
       const implementTypeStartLine = range.start.line;
       const implementTypeCurline = document.lineAt(implementTypeStartLine);
       const implementTypeCurlineText = fileServer
@@ -78,11 +77,21 @@ export function activate(context: vscode.ExtensionContext) {
       const match = implementTypeCurlineText.match(
         /(?<=type\s*)(\w+)\s(?!interface)/g
       );
-      let receiver = "";
+      let receiver: string | null = "";
+      let implementTypeName = "";
       if (match) {
-        const implementTypeName = match[0].trim();
+        implementTypeName = match[0].trim();
+        receiver = getReceiverName(
+          implementTypeName,
+          fileServer.removeComment(document.getText())
+        );
+      }
+      const nextStep = receiver === null;
+      const state = await multiStepInput(context, pickItemList, nextStep);
+      if (nextStep) {
         receiver = state.receiverNamePair + implementTypeName;
       }
+      const chiosInterface = state.resourceInterfaces;
 
       const text = document.getText();
       const arr = text.split("\n");

@@ -412,3 +412,25 @@ function newEnvironment(): NodeJS.Dict<string> {
   }
   return env;
 }
+
+// -----------
+// xxxx.......
+// -----------
+export function getReceiverName(typ: string, text: string): string | null {
+  const arr = text.split("\n");
+  const searchKey = `${typ})`;
+  const searchLine = arr.find((line) => {
+    if (line) {
+      return line.indexOf(searchKey) !== -1;
+    }
+  });
+  if (!searchLine) {
+    return null;
+  }
+  const match = searchLine?.match(/(?<=func\s*\()[^)]*(?=\s*\))/g);
+  if (!match) {
+    return null;
+  }
+
+  return match[0];
+}

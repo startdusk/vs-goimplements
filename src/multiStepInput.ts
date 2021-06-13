@@ -6,7 +6,6 @@ import {
   QuickInput,
   ExtensionContext,
   QuickInputButtons,
-  Uri,
 } from "vscode";
 import { fileServer } from "./fileserver";
 
@@ -16,7 +15,8 @@ interface IPickItem extends QuickPickItem {
 
 export async function multiStepInput(
   context: ExtensionContext,
-  resourceGroups: IPickItem[]
+  resourceGroups: IPickItem[],
+  nextStep: boolean
 ) {
   interface State {
     title: string;
@@ -47,10 +47,12 @@ export async function multiStepInput(
         typeof state.resourceInterfaces !== "string"
           ? state.resourceInterfaces
           : undefined,
-      //   buttons: [createResourceGroupButton],
       shouldResume: shouldResume,
     });
     state.resourceInterfaces = pick as IPickItem;
+    if (!nextStep) {
+      return;
+    }
     return (input: MultiStepInput) => inputRecieverName(input, state);
   }
 
