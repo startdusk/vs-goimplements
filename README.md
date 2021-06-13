@@ -22,4 +22,4 @@
   - Start a task `npm: watch` to compile the code
   - Run the extension in a new VS Code window
 
-# Enjoy：）
+**Enjoy：)**
