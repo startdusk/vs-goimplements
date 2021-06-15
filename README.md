@@ -7,7 +7,7 @@
 
 ![Multi-step sample](https://github.com/startdusk/vs-goimplements/blob/main/preview.gif)
 
-- and you can using default shorcut `Ctrl + Shift + i`
+- and you can using default shortcut `Ctrl + Shift + i`
 
 # Pre dependence
 
