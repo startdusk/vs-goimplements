@@ -16,6 +16,7 @@ import {
   getReceiverName,
 } from "./util";
 import { multiStepInput } from "./multiStepInput";
+import { readFileSync } from "fs";
 
 interface IPickItem extends vscode.QuickPickItem {
   goImterface: fileServer.IInterface;
@@ -50,10 +51,25 @@ export function activate(context: vscode.ExtensionContext) {
         return;
       }
       vscode.workspace.workspaceFolders?.forEach((value) => {
-        fileServer.viaDir(value.uri.fsPath).forEach((url) => {
+        const fsPath = value.uri.fsPath;
+        const gomodule = readFileSync(fsPath + "/go.mod");
+        const gomoduleText = gomodule.toString();
+        if (!gomoduleText) {
+          return;
+        }
+        const lines = gomoduleText.split("\n");
+        const firstLine = lines[0];
+        const moduleName = firstLine.split(" ")[1];
+        const basename = path.basename(fsPath);
+        fileServer.viaDir(fsPath).forEach((url) => {
+          const modulePath = url.split(basename)[1];
+          const index = modulePath.lastIndexOf("/");
+          const realPath = moduleName + modulePath.substring(0, index);
+
           fileServer.extractInterface({
             url,
             gopath: false,
+            relativeInterfacePath: realPath,
           });
         });
       });
@@ -92,6 +108,13 @@ export function activate(context: vscode.ExtensionContext) {
         receiver = state.receiverNamePair + implementTypeName;
       }
       const chiosInterface = state.resourceInterfaces;
+      let implementInterface = chiosInterface.goImterface.fullInterfaceName;
+      if (!chiosInterface.goImterface.gopath) {
+        implementInterface =
+          chiosInterface.goImterface.relativeInterfacePath +
+          "." +
+          chiosInterface.goImterface.interfaceName;
+      }
 
       const text = document.getText();
       const arr = text.split("\n");
@@ -118,10 +141,7 @@ export function activate(context: vscode.ExtensionContext) {
           }
         }
       }
-      const args = [
-        `${receiver}`,
-        `${chiosInterface.goImterface.fullInterfaceName}`,
-      ];
+      const args = [`${receiver}`, `${implementInterface}`];
       const goimpl = getBinPath("impl");
       const p = cp.execFile(
         goimpl,

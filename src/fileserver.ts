@@ -12,6 +12,7 @@ export namespace fileServer {
     interfaceName: string;
     fullInterfaceName: string;
     gopath: boolean;
+    relativeInterfacePath?: string;
   }
 
   let interfaceList: IInterface[] = [];
@@ -64,6 +65,7 @@ export namespace fileServer {
   export interface GOProjectInfo {
     url: string;
     gopath: boolean;
+    relativeInterfacePath?: string;
   }
 
   export function extractInterface(info: GOProjectInfo) {
@@ -109,6 +111,7 @@ export namespace fileServer {
         } else {
           iface.gopath = false;
           interfaceList.push(iface);
+          iface.relativeInterfacePath = info.relativeInterfacePath;
         }
       });
     }
