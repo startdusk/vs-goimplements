@@ -46,6 +46,7 @@ export namespace fileServer {
         viaDir(fullPath, list);
       } else if (
         stat.isFile() &&
+        // TODO: bad code
         path.extname(fullPath) === ".go" &&
         fullPath.search("_test.go") === -1 &&
         fullPath.search("internal") === -1 &&
