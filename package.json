@@ -7,7 +7,7 @@
     "type": "git",
     "url": "https://github.com/startdusk/vs-goimplements.git"
   },
-  "version": "0.0.9",
+  "version": "0.0.10",
   "license": "MIT",
   "engines": {
     "vscode": "^1.55.0"

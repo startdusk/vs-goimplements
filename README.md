@@ -3,6 +3,8 @@
 [![Badge for version for Visual Studio Code extension](https://vsmarketplacebadge.apphb.com/version-short/clylia217.vs-goimplements.svg?color=blue&style=?style=for-the-badge&logo=visual-studio-code)](https://marketplace.visualstudio.com/items?itemName=clylia217.vs-goimplements&wt.mc_id=vscode-versionlens-gitlab) [![Installs](https://vsmarketplacebadge.apphb.com/installs-short/clylia217.vs-goimplements.svg?color=blue&style=flat-square)](https://marketplace.visualstudio.com/items?itemName=clylia217.vs-goimplements)
 [![Rating](https://vsmarketplacebadge.apphb.com/rating-short/clylia217.vs-goimplements.svg?color=blue&style=flat-square)](https://marketplace.visualstudio.com/items?itemName=clylia217.vs-goimplements) [![The MIT License](https://img.shields.io/badge/license-MIT-orange.svg?color=blue&style=flat-square)](https://opensource.org/licenses/MIT)
 
+[![Open in Visual Studio Code](https://open.vscode.dev/badges/open-in-vscode.svg)](https://open.vscode.dev/startdusk/vs-goimplements)
+
 **Usage**
 
 ![Multi-step sample](https://github.com/startdusk/vs-goimplements/blob/main/preview.gif)
